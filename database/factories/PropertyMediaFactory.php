@@ -25,7 +25,7 @@ class PropertyMediaFactory extends Factory
         return [
             'property_id' => Property::factory(),
             'type' => 'picture', //**should be a MIME or extension, generste from picture automatically, add other fields for more characteristics like size, etc
-            'path' => 'https://picsum.photos/200/300',
+            'path' => 'https://picsum.photos/405/384',
         ];
     }
 }

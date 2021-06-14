@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\FavouriteProperty;
+use App\Models\User;
+use App\Models\Property;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FavouritePropertyFactory extends Factory

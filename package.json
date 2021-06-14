@@ -10,9 +10,21 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@vue/compiler-sfc": "^3.1.1",
+        "autoprefixer": "^10.2.6",
         "axios": "^0.21",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
-        "postcss": "^8.1.14"
+        "postcss": "^8.3.0",
+        "sass": "^1.34.1",
+        "sass-loader": "^12.1.0",
+        "tailwindcss": "^2.1.4",
+        "vue-loader": "^16.2.0"
+    },
+    "dependencies": {
+        "@chenfengyuan/vue-carousel": "^1.0.6",
+        "swiper": "^6.7.0",
+        "vue": "^3.1.1",
+        "vue-template-compiler": "^2.6.14"
     }
 }

@@ -17,7 +17,7 @@ class CreatePropertyReviewTable extends Migration
             $table->id('property_review_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('property_id');
-            $table->float('rating', 1, 1);
+            $table->decimal('rating', 2, 1);
             $table->text('review')->nullable();
             $table->timestamps();
 

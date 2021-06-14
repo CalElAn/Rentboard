@@ -9,26 +9,26 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Property;
 use App\Models\PropertyFeature;
-use Database\Factories\FavouritePropertyFactory;
-use Database\Factories\PropertyMediaFactory;
-use Database\Factories\PropertyReviewFactory;
-use Database\Factories\ArticleFactory;
+use App\Models\FavouriteProperty;
+use App\Models\PropertyMedia;
+use App\Models\PropertyReview;
+use App\Models\Article;
 
 class UserTest extends TestCase
 {
-    public function test_a_user_has_properties()
+    public function createAUserWithEverything()
     {
         //create a user with properties with features
 
-        $articleFactory = ArticleFactory::factory()->count(2);
+        $articleFactory = Article::factory()->count(2);
 
-        $favouritePropertyFactory = FavouritePropertyFactory::factory()->count(2);
+        $favouritePropertyFactory = FavouriteProperty::factory()->count(2);
 
-        $propertyReviewFactory = PropertyReviewFactory::factory()->count(2);
+        $propertyReviewFactory = PropertyReview::factory()->count(2);
 
-        $propertyMediaFactory = PropertyMediaFactory::factory()->count(2);
+        $propertyMediaFactory = PropertyMedia::factory()->count(5);
 
-        $propertyFeatureFactory = PropertyFeature::factory()->count(2);
+        $propertyFeatureFactory = PropertyFeature::factory()->count(8);
 
         $propertyFactory = Property::factory()->count(1)->has($propertyFeatureFactory, 'features')
                                                         ->has($propertyMediaFactory, 'media')
@@ -37,19 +37,24 @@ class UserTest extends TestCase
         $userFactory = User::factory()->count(1)->has($favouritePropertyFactory, 'favouriteProperties')
                                                 ->has($articleFactory, 'articles')
                                                 ->has($propertyFactory, 'properties')->create();
-
-        // $user = User::factory()
-        //             ->count(1)
-        //             ->has(
-        //                 Property::factory()->count(1)->has(
-        //                     PropertyFeature::factory()->count(2), 'features'
-        //                                                 ), 
-        //                 'properties'
-        //                 )
-        //             ->create();
         
         // dd($userFactory);
         //using make instead of create will not persist it
+    }
 
+    /** @test */
+    public function homepage_shows_property_card_with_all_details()
+    {
+        $property = Property::latest()->first();
+
+        $this->get('/')
+            ->assertSee($property->propertyType->type)
+            ->assertSee($property->town)
+            ->assertSee($property->address)
+            ->assertSeeInOrder($property->features->pluck('name')->toArray())
+            ->assertSee($property->reviews->average('rating'))
+            ->assertSee($property->reviews->count().' reviews')
+            ->assertSee($property->rent.' / month')
+        ;
     }
 }

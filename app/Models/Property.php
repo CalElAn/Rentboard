@@ -28,8 +28,8 @@ class Property extends Model
         return $this->hasMany(PropertyReview::class, 'property_id', 'property_id');
     }
 
-    public function type()
+    public function propertyType() //changed name from 'type' cos it conflicted with a property on the model
     {
-        return $this->belongsTo(PropertyType::class, 'property_id', 'property_type_id');
+        return $this->belongsTo(PropertyType::class, 'type', 'property_type_id');
     }
 }
