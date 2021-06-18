@@ -16,3 +16,7 @@ use App\Http\Controllers\HomeController;
 */
 
 Route::get('/', [HomeController::class, 'index']);
+
+Route::get('add-property', function () {
+    return view('add-property');
+});

@@ -45,6 +45,8 @@ class UserTest extends TestCase
     /** @test */
     public function homepage_shows_property_card_with_all_details()
     {
+        $this->withoutExceptionHandling();
+
         $property = Property::latest()->first();
 
         $this->get('/')

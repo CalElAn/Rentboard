@@ -16,7 +16,7 @@
             <img src="/images/logo.png" alt="{{env('APP_NAME')}} logo">
             <div class="text-white flex w-1/3">
                 <div class="flex justify-center w-1/2">
-                    <a class="py-1 pl-14" href="#">
+                    <a class="py-1 pl-14" href="/add-property">
                         Add a property
                     </a>
                 </div>
@@ -36,7 +36,7 @@
             </div>
             <div class="flex justify-center">
                 <div class="bg-white flex items-center rounded-full shadow-xl w-5/12">
-                    <input class="rounded-l-full w-full pl-12 py-4 px-6 text-gray-700 leading-tight focus:outline-none" id="search" type="text" placeholder="Where do you want to live?">
+                    <input class="border-0 rounded-l-full w-full pl-12 py-4 px-6 text-gray-700 leading-tight focus:outline-none" id="search" type="text" placeholder="Where do you want to live?">
     
                     <div class="p-4">
                         <button class="rounded-full p-2 focus:outline-none w-12 h-12 flex items-center justify-center">
