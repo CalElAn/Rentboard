@@ -36,27 +36,11 @@ class UserTest extends TestCase
         
         $userFactory = User::factory()->count(1)->has($favouritePropertyFactory, 'favouriteProperties')
                                                 ->has($articleFactory, 'articles')
-                                                ->has($propertyFactory, 'properties')->create();
+                                                ->has($propertyFactory, 'properties')
+                                                ->create();
         
         // dd($userFactory);
         //using make instead of create will not persist it
     }
 
-    /** @test */
-    public function homepage_shows_property_card_with_all_details()
-    {
-        $this->withoutExceptionHandling();
-
-        $property = Property::latest()->first();
-
-        $this->get('/')
-            ->assertSee($property->propertyType->type)
-            ->assertSee($property->town)
-            ->assertSee($property->address)
-            ->assertSeeInOrder($property->features->pluck('name')->toArray())
-            ->assertSee($property->reviews->average('rating'))
-            ->assertSee($property->reviews->count().' reviews')
-            ->assertSee($property->rent.' / month')
-        ;
-    }
 }

@@ -27,6 +27,7 @@ class PropertyFeatureFactory extends Factory
 
         return [
             'name' => $propertyFeatureData[ array_rand($propertyFeatureData) ],
+            'input_type' => 'checkbox'
         ];
     }
 }

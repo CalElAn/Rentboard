@@ -15,6 +15,6 @@ class PropertyType extends Model
 
     public function features()
     {
-        return $this->belongsToMany(PropertyFeature::class, 'PropertyType_PropertyFeature_join', 'property_type_id', 'property_type_id');
+        return $this->belongsToMany(PropertyFeature::class, 'PropertyType_PropertyFeature_join', 'property_type_id', 'property_feature_id', 'property_type_id', 'property_feature_id');
     }
 }

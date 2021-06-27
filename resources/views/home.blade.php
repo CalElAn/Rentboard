@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <title>{{env('APP_NAME')}}</title>
 </head>
-<body>
+<body class="font-main">
     <noscript>
         <strong>We're sorry but doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
       </noscript>  
@@ -54,9 +55,9 @@
     </div>
     <div class="bg-main-colour py-30 flex flex-col h-60 justify-center text-center text-white w-full">
         <p class="text-4xl font-bold pb-3">A home for every renter</p>
-        <p>There is no such thing as a home that fits all. Are you looking</p>
-        <p>for something particular in your next rental?</p>
-        <p>Rent easy with us.</p>
+        <p class="text-xl">There is no such thing as a home that fits all. Are you looking</p>
+        <p class="text-xl">for something particular in your next rental?</p>
+        <p class="text-xl">Rent easy with us.</p>
     </div>
     <div class="h-screen bg-main-gray">
         <div class="pt-10 pb-16 flex justify-center text-4xl font-bold">
@@ -66,6 +67,7 @@
             <div class="flex h-96 w-3/5 rounded-2xl bg-card-gray">
                 <property-media-carousel class="h-full rounded-2xl w-1/2"></property-media-carousel>
                 <div class="flex flex-col gap-2 h-full justify-center rounded-r-2xl w-1/2 px-5">
+                    @isset($property)
                     <div class="flex justify-between">
                         {{$property->propertyType->type}} in {{$property->town}}
 
@@ -110,6 +112,7 @@
                             GH&#8373 {{$property->rent}} / month
                         </div>
                     </div>
+                    @endisset
                 </div>
             </div>
         </div>

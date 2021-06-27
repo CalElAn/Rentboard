@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\FilePondController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +17,16 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [PropertyController::class, 'index']);
 
-Route::get('add-property', function () {
-    return view('add-property');
-});
+Route::get('/add-property', [PropertyController::class, 'create']);
+Route::post('/add-property', [PropertyController::class, 'store']);
+
+Route::post('/filepond/process', [FilePondController::class, 'process']);
+
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';

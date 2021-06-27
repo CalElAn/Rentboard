@@ -16,17 +16,19 @@ class CreatePropertyTable extends Migration
         Schema::create('property', function (Blueprint $table) {
             $table->id('property_id');
             $table->unsignedBigInteger('user_id');
-            $table->integer('unit_number');
+            $table->integer('unit_number')->default(1);
             $table->string('city');
             $table->string('town');
             $table->text('address');
-            $table->string('gps_location')->unique();
+            $table->string('gps_location')->unique()->nullable();
             $table->unsignedBigInteger('type')->nullable();
+            $table->text('description')->nullable();
             $table->integer('rent');
-            $table->boolean('is_rent_negotiable');
-            $table->integer('advance');
-            $table->boolean('is_advance_negotiable');
+            $table->boolean('is_rent_negotiable')->default(0);
+            $table->integer('advance')->nullable();
+            $table->boolean('is_advance_negotiable')->default(0);
             $table->string('contact_phone_number');
+            $table->string('contact_email');
             $table->boolean('is_property_available')->default(1);
             $table->timestamps();
 

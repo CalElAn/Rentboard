@@ -1,50 +1,77 @@
 <template>
 <div class="ml-auto mr-auto my-5 w-1/2">
     <ul id="progress-bar" class="font-semibold">
-        <li :class="[step==1 ? 'active' : '']" class="progress-step inline list-none text-center">Property details</li>
-        <li :class="[step==2 ? 'active' : '']" class="progress-step inline list-none text-center">Features</li>
-        <li :class="[step==3 ? 'active' : '']" class="progress-step inline list-none text-center">Upload media</li>
+        <li :class="[step == 1 ? 'active' : '']" class="progress-step inline list-none text-center">
+            Details
+        </li>
+        <li :class="[step == 2 ? 'active' : '']" class="progress-step inline list-none text-center">
+            Features
+        </li>
+        <li :class="[step == 3 ? 'active' : '']" class="progress-step inline list-none text-center">
+            Media
+        </li>
     </ul>
 </div>
 <div class="flex justify-center items-center h-3/4">
-    <div class="rounded-2xl bg-white p-6" :class="[animation]">
-        <div class="text-xl mb-3">Property Details</div>
-        <section v-if="step == 1">
+    <div class="rounded-2xl bg-white p-6" :class="[animation, step == 3 ? 'w-1/2' : '']">
+        <!-- Details -->
+        <section v-show="step == 1">
+            <div class="text-xl mb-3">Property Details</div>
             <div class="grid grid-cols-2 gap-6">
                 <div class="col-span-1">
                     <label for="city" class="block font-medium text-gray-700 text-sm">City <span
                             class="text-red-600">*</span></label>
-                    <input type="text" id="city"
+                    <input v-model="form.city" type="text" id="city"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <span class="text-red-600 text-sm" v-if="v$.form.city.$error">{{ v$.form.city.$errors[0].$message }}
+                    </span>
                 </div>
                 <div class="col-span-1">
                     <label for="town" class="block font-medium text-gray-700 text-sm">Town <span
                             class="text-red-600">*</span></label>
-                    <input type="text" id="town"
+                    <input v-model="form.town" type="text" id="town"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <span class="text-red-600 text-sm" v-if="v$.form.town.$error">{{ v$.form.town.$errors[0].$message }}
+                    </span>
                 </div>
                 <div class="col-span-2">
                     <label for="address" class="block font-medium text-gray-700 text-sm">Street address <span
                             class="text-red-600">*</span></label>
-                    <input type="text" id="address"
+                    <input v-model="form.address" type="text" id="address"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <span class="text-red-600 text-sm" v-if="v$.form.address.$error">{{ v$.form.address.$errors[0].$message }}
+                    </span>
                 </div>
                 <div class="col-span-2">
                     <label for="gps_location" class="block font-medium text-gray-700 text-sm">GPS location</label>
-                    <input readonly type="text" id="gps_location"
-                        class="bg-gray-100 block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <div class="flex rounded-md">
+                        <input v-model="form.gpsLocation" readonly type="text" id="gps_location"
+                            class="block bg-gray-100 w-full mt-1 rounded-l-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <button
+                            @click="getLocation"
+                            class="bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 border mt-1 border-gray-300 border-l-0 inline-flex justify-center items-center px-3 rounded-r-md shadow-sm text-gray-500 text-sm font-medium">
+                            Click to add location
+                        </button>
+                        <span class="text-red-600 text-sm" v-if="gpsLocationError">{{ gpsLocationError }}
+                        </span>
+                    </div>
                 </div>
                 <div class="col-span-1 col-start-1">
                     <label for="contact-number" class="block font-medium text-gray-700 text-sm">Contact number <span
                             class="text-red-600">*</span></label>
-                    <input type="tel" id="contact-number"
+                    <input v-model="form.contactNumber" type="tel" id="contact-number"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <span class="text-red-600 text-sm"
+                        v-if="v$.form.contactNumber.$error">{{ v$.form.contactNumber.$errors[0].$message }}
+                    </span>
                 </div>
                 <div class="col-span-1">
                     <label for="email" class="block font-medium text-gray-700 text-sm">Email <span
                             class="text-red-600">*</span></label>
-                    <input type="email" id="email"
+                    <input v-model="form.email" type="email" id="email"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <span class="text-red-600 text-sm" v-if="v$.form.email.$error">{{ v$.form.email.$errors[0].$message }}
+                    </span>
                 </div>
                 <div class="col-span-2 flex justify-end">
                     <button @click="nextStep"
@@ -54,71 +81,77 @@
                 </div>
             </div>
         </section>
-        <section v-if="step == 2">
-            <div class="grid grid-cols-2 gap-6">
+        <!-- Features -->
+        <section v-show="step == 2">
+            <div class="text-xl mb-3">Property Features</div>
+            <div class="grid gap-6" :class="[property[form.type]?.[0] ? 'grid-cols-2' : 'grid-cols-1']">
                 <div class="col-span-1">
                     <label for="type" class="block font-medium text-gray-700 text-sm">Type <span
                             class="text-red-600">*</span></label>
-                    <select type="text" id="type"
+                    <select 
+                        v-model="form.type" 
+                        @change="typeOnChange"
+                        id="type"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <option>one</option>
-                        <option>two</option>
-                        <option>three</option>
+                        <option value="">-- Select property type --</option>
+                        <option v-for="(item, index) in property" :key="index" :value="index">
+                            {{ index }}
+                        </option>
                     </select>
+                    <span class="text-red-600 text-sm" v-if="v$.form.type.$error">{{ v$.form.type.$errors[0].$message }}
+                    </span>
                 </div>
-                <div class="col-span-1"></div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Number of bedrooms</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Number of washrooms</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Porch</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Kitchen</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Dining room</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Living room</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Furnished</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Semi-furnished</span>
-                </div>
-                <div class="col-span-1 flex items-center">
-                    <input type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="ml-2">Walled</span>
+                <div v-if="property[form.type]?.[0]" class="col-span-1"></div>
+                <template v-for="(item, index) in property[form.type]" :key="index">
+                    <div v-if="item['input_type'] == 'number'" class="col-span-1">
+                        <label for="address" class="block font-medium text-gray-700 text-sm">{{ item['name'] }}</label>
+                        <input type="number"
+                            v-model="form.inputFeatures[item['name']]"
+                            class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+                </template>
+                <template v-for="(item, index) in property[form.type]" :key="index">
+                    <div v-if="item['input_type'] == 'checkbox'" class="col-span-1 flex items-center">
+                        <input type="checkbox"
+                            v-model="form.checkedFeatures"
+                            :value="item['name']"
+                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <span class="ml-2">{{ item['name'] }}</span>
+                    </div>
+                </template>
+                <template v-for="(item, index) in property[form.type]" :key="index">
+                    <div v-if="item['input_type'] == 'radio'" class="col-span-1 flex items-center">
+                        <input  type="radio"
+                            v-model="form.pickedFeatures"
+                            :value="item['name']"
+                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> 
+                       <span class="ml-2">{{ item['name'] }}</span>
+                    </div>
+                </template>
+                <div class="col-span-2 col-start-1">
+                    <label for="description" class="block text-sm font-medium text-gray-700">
+                    Other Features
+                    </label>
+                    <div class="mt-1">
+                    <textarea id="description" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" 
+                        v-model="form.description"
+                        placeholder="Add any other features we might have missed"></textarea>
+                    </div>
                 </div>
                 <div class="col-span-1 col-start-1">
-                    <label for="address" class="block font-medium text-gray-700 text-sm">Price (GH&#8373 / month) <span
-                            class="text-red-600">*</span></label>
-                    <input type="number" step="any" id="address"
-                        class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    <div>
+                        <label for="price"
+                            class="block font-medium text-gray-700 text-sm">{{ 'Price (GH&#8373; / month)' }}
+                            <span class="text-red-600">*</span></label>
+                        <input type="number" step="any" id="address"
+                            v-model="form.price"
+                            class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <span class="text-red-600 text-sm" v-if="v$.form.price.$error">{{ v$.form.price.$errors[0].$message }}
+                        </span>
+                    </div>
                     <div class="col-span-1 col-start-1 inline-flex items-center mt-2">
                         <input type="checkbox"
+                            v-model="form.negotiable"
                             class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
                         <span class="ml-2">Negotiable</span>
                     </div>
@@ -135,29 +168,39 @@
                 </div>
             </div>
         </section>
-        <section v-if="step == 3">
-            <div class="grid grid-cols-2 gap-6">
-                <div class="col-span-2">
-                    <label class="block text-sm font-medium text-gray-700"> Upload photos </label>
-                    <div
-                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                        <div class="space-y-1 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                viewBox="0 0 48 48" aria-hidden="true">
-                                <path
-                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="file-upload"
-                                    class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                    <span>Upload a file</span>
-                                    <input id="file-upload" name="file-upload" type="file" class="sr-only" />
-                                </label>
-                                <p class="pl-1">or drag and drop</p>
-                            </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                        </div>
+        <!-- Upload Media -->
+        <section v-show="step == 3">
+            <div>
+                <div class="text-xl mb-3">Upload Media</div>
+                <div>
+                    <label class="block font-medium text-gray-700">
+                        Upload photos
+                    </label>
+                    <file-pond
+                        name="filepond"
+                        ref="filepond"
+                        label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
+                        allow-multiple="true"
+                        allow-reorder="true"
+                        accepted-file-types="image/jpeg, image/png"
+                        :server = "{
+                            url: '/filepond',
+                            process: '/process',
+                            revert: '/revert',
+                            restore: '/restore/',
+                            load: '/load/',
+                            fetch: '/fetch/',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+                        }"
+                        @processFiles="onFilePondProcessFiles"
+                    />
+                </div>
+                <div class="input-errors ml-3 my-3">
+                    <div 
+                        v-for="error of v$.form.$errors" :key="error.$uid" 
+                        class="text-red-600 text-sm">{{ error.$message +' on "'+ error.$property +'"' }}
                     </div>
                 </div>
                 <div class="col-span-2 flex justify-between">
@@ -166,6 +209,7 @@
                         Previous
                     </button>
                     <button
+                        @click="submitForm"
                         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Submit
                     </button>
@@ -177,118 +221,266 @@
 </template>
 
 <script>
-export default {
 
-    data() {
+// Import Vue FilePond
+import vueFilePond from 'vue-filepond'
+
+// Import FilePond styles
+import 'filepond/dist/filepond.min.css'
+
+// Import FilePond plugins
+// Please note that you need to install these plugins separately
+
+// Import image preview plugin styles
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
+
+// Import image preview and file type validation plugins
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+
+// Create component
+const FilePond = vueFilePond(
+    FilePondPluginFileValidateType,
+    FilePondPluginImagePreview
+)
+
+
+//Vuelidate
+import useVuelidate from '@vuelidate/core';
+import { required, email, numeric } from '@vuelidate/validators';
+
+
+export default {
+    setup() {
         return {
-            step: 1,
-            animation: ''
+            v$: useVuelidate()
         };
     },
 
+    data() {
+        return {
+            step: 3,
+            animation: '',
+
+            csrfToken: csrfToken,
+
+            gpsLocationError: '',
+
+            form: {
+                city: '',
+                town: '',
+                address: '',
+                gpsLocation: '',
+                contactNumber: '',
+                email: '',
+                type: '',
+                checkedFeatures: [],
+                pickedFeatures: '',
+                inputFeatures: {},
+                description: '',
+                price: '',
+                negotiable: '', //lalter check when submitted if I need to change true/false value to 0 or 1
+                media: [],
+            }
+        };
+    },
+
+    components: {
+      FilePond
+    },
+
+    validations() {
+        return {
+            form: {
+                city: {
+                    required,
+                    $autoDirty: true
+                },
+                town: {
+                    required,
+                    $autoDirty: true
+                },
+                address: {
+                    required,
+                    $autoDirty: true
+                },
+                contactNumber: {
+                    required,
+                    $autoDirty: true
+                },
+                email: {
+                    required,
+                    email,
+                    $autoDirty: true
+                },
+                type: {
+                    required,
+                    $autoDirty: true
+                },
+                price: {
+                    required,
+                    $autoDirty: true,
+                    numeric
+                },
+            }
+        };
+    },
+
+    props: ['property'],
+
     methods: {
-
         nextStep() {
-
             this.animation = 'card-fade-out';
 
             setTimeout(() => {
                 this.animation = 'card-slide-in-from-right';
-                this.step++;                
-            }, 500);
+                this.step++;
+            }, 300);
         },
 
         previousStep() {
-
             this.animation = 'card-fade-out';
 
             setTimeout(() => {
                 this.animation = 'card-slide-in-from-left';
                 this.step--;
-            }, 500);
+            }, 300);
         },
+
+        getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(this.showPosition);
+            } else {
+                gpsLocationError = 'Geolocation is not supported by this browser.';
+            }
+        },
+
+        showPosition(position) {
+            this.form.gpsLocation = position.coords.latitude + ',' + position.coords.longitude;
+        },
+
+        typeOnChange() {
+            this.form.checkedFeatures.length = 0;
+            this.form.pickedFeatures = '';
+            this.form.inputFeatures = {};
+        },
+
+        submitForm() {
+            this.v$.$touch()
+            // if (this.v$.$error) return
+
+            this.form.media.length = 0;
+            this.$refs.filepond.getFiles().forEach((value, key) => this.form.media.push(value.serverId))
+
+            axios.post('/add-property', this.form)     
+
+        },
+
+        onFilePondProcessFiles() {
+            //wait for media to finish uploading error, set back to false on addMedia event
+        }
     },
 };
 </script>
 
+<style>
+.filepond--item {
+    /* percentage over number of columns in grid divided by 2 */
+    width: calc(50%/2 - 0.5em); 
+}
+</style>
+
 <style lang="scss" scoped>
+
 #progress-bar {
 	overflow: hidden;
 }
 
 .progress-step {
-    /*progress-bar text*/
+	/*progress-bar text*/
 	width: 33.33%;
 	float: left;
 	position: relative;
-    color: rgb(79, 70, 229);
+	color: rgb(79, 70, 229);
 
-    /*progress-bar circle*/
-    &:before {
-        content: "";
-        width: 15px;
-        height: 15px;
-        display: block;
-        background: rgb(79, 70, 229);
-        border-radius: 50%;
-        /* top | right | bottom | left */
-        margin: 0 auto 0px auto;
-    }
+	/*progress-bar circle*/
+	&:before {
+		content: '';
+		width: 15px;
+		height: 15px;
+		display: block;
+		background: rgb(79, 70, 229);
+		border-radius: 50%;
+		/* top | right | bottom | left */
+		margin: 0 auto 0px auto;
+	}
 
-    /*progress-bar connectors(lines)*/
-    &:after {
-        content: '';
-        width: 100%;
-        height: 3px;
-        background: rgb(79, 70, 229);
-        position: absolute;
-        left: -50%;
-        top: 6px;
-        z-index: -1; /*put it behind the numbers*/
-    }
+	/*progress-bar connectors(lines)*/
+	&:after {
+		content: '';
+		width: 100%;
+		height: 3px;
+		background: rgb(79, 70, 229);
+		position: absolute;
+		left: -50%;
+		top: 6px;
+		z-index: -1; /*put it behind the numbers*/
+	}
 
-    &:first-child:after {
-        /*line not needed before the first step*/
-        content: none; 
-    }
+	&:first-child:after {
+		/*line not needed before the first step*/
+		content: none;
+	}
 
-    /*to style every sibling after li active*/
-    &.active {
-        ~.progress-step{
-            color: white;
-        }
+	/*to style every sibling after li active*/
+	&.active {
+		~ .progress-step {
+			color: white;
+		}
 
-        ~.progress-step:before, ~.progress-step:after {
-            background: white;
-        }
-    }
+		~ .progress-step:before,
+		~ .progress-step:after {
+			background: white;
+		}
+	}
 }
 
-.card-slide-in-from-right{
-    animation: slide-in-from-right-animation .6s ease-in-out;
+.card-slide-in-from-right {
+	animation: slide-in-from-right-animation 0.4s ease-out;
 }
 
 @keyframes slide-in-from-right-animation {
-    0% { transform: translateX(25%); }
-    100% { transform: translateX(0%); }
+	0% {
+		transform: translateX(25%);
+	}
+	100% {
+		transform: translateX(0%);
+	}
 }
 
-.card-slide-in-from-left{
-    animation: slide-in-from-left-animation .6s ease-in-out;
+.card-slide-in-from-left {
+	animation: slide-in-from-left-animation 0.4s ease-out;
 }
 
 @keyframes slide-in-from-left-animation {
-    0% { transform: translateX(-25%); }
-    100% { transform: translateX(0%); }
+	0% {
+		transform: translateX(-25%);
+	}
+	100% {
+		transform: translateX(0%);
+	}
 }
 
 .card-fade-out {
-    animation: fade-out-animation .6s ease-in-out;
+	animation: fade-out-animation 0.4s ease-in-out;
 }
 
 @keyframes fade-out-animation {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
-
 </style>

@@ -24,8 +24,8 @@ class ArticleFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'title' => $this->faker->sentence,
-            'sub_title' => $this->faker->text,
+            'title' => $this->faker->sentence(),
+            'sub_title' => $this->faker->text(),
             'text' => $this->faker->paragraphs(3, true), 
         ];
     }
