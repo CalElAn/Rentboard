@@ -94,7 +94,8 @@
                         id="type"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         <option value="">-- Select property type --</option>
-                        <option v-for="(item, index) in property" :key="index" :value="index">
+                        <option v-for="(item, index) in property" :key="index" 
+                            :value="index">
                             {{ index }}
                         </option>
                     </select>
@@ -197,11 +198,10 @@
                         @processFiles="onFilePondProcessFiles"
                     />
                 </div>
-                <div class="input-errors ml-3 my-3">
-                    <div 
-                        v-for="error of v$.form.$errors" :key="error.$uid" 
-                        class="text-red-600 text-sm">{{ error.$message +' on "'+ error.$property +'"' }}
-                    </div>
+                <div class="input-errors ml-3 my-3 text-red-600 text-sm">
+                    <ul class="mt-3 list-disc list-inside">
+                        <li v-for="error of v$.form.$errors" :key="error.$uid">{{ error.$message +' on "'+ error.$property +'"'  }}</li>
+                    </ul>
                 </div>
                 <div class="col-span-2 flex justify-between">
                     <button @click="previousStep"
@@ -274,6 +274,7 @@ export default {
                 contactNumber: '',
                 email: '',
                 type: '',
+                typeID: '',
                 checkedFeatures: [],
                 pickedFeatures: '',
                 inputFeatures: {},
@@ -326,7 +327,9 @@ export default {
         };
     },
 
-    props: ['property'],
+    props: ['property', 'propertyTypeIDs', 'isUserAuthenticated', 'authenticatedUser'],
+
+    emits: ['showLoginModal'],
 
     methods: {
         nextStep() {
@@ -360,6 +363,8 @@ export default {
         },
 
         typeOnChange() {
+            this.form.typeID = this.propertyTypeIDs[this.form.type]
+
             this.form.checkedFeatures.length = 0;
             this.form.pickedFeatures = '';
             this.form.inputFeatures = {};
@@ -372,15 +377,34 @@ export default {
             this.form.media.length = 0;
             this.$refs.filepond.getFiles().forEach((value, key) => this.form.media.push(value.serverId))
 
-            axios.post('/add-property', this.form)     
+            if (!this.isUserAuthenticated) {
+                this.$emit('showLoginModal')
+                return
+            }
 
+            // axios.post('/add-property', this.form)     
+        },
+
+        keepTokenAlive() {
+            axios.post('/keep-csrf-token-alive')
+                .catch(function (error) {
+                    console.log(error);
+                    if (error.response.status == 419) 
+                    {
+                        location.reload();
+                    }    
+                })
         },
 
         onFilePondProcessFiles() {
             //wait for media to finish uploading error, set back to false on addMedia event
         }
     },
-};
+
+    mounted() {
+        setInterval(this.keepTokenAlive, 1000 * 60 * 60); // every 60 mins 
+    },
+}
 </script>
 
 <style>

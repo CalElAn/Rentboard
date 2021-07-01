@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\Property;
-
+use App\Models\User;
 
 class PropertyTest extends TestCase
 {
@@ -42,6 +42,7 @@ class PropertyTest extends TestCase
             "contactNumber" => "+1 (891) 437-5757",
             "email" => "cinugewiz@mailinator.com",
             "type" => "Apartment",
+            "typeID" => 2,
             "checkedFeatures" => [
                 0 => "Walled",
                 1 => "Living room",
@@ -54,7 +55,7 @@ class PropertyTest extends TestCase
                 "Number of washrooms" => "7",
             ],
             "description" => "Accusamus sint offic",
-            "price" => "4",
+            "price" => "400",
             "negotiable" => true,
             "media" => [
                 0 => "2021-06-27 06:22:32_1CjdL",
@@ -64,10 +65,24 @@ class PropertyTest extends TestCase
             ]
         ];
 
+        $user = User::factory()->create();
+
         $this->post('/add-property', $input);
 
         $this->assertDatabaseHas('property', [
-                                            'email' => 'sally@example.com',
-                                            ]);
+                                            'user_id' =>$user->id,
+                                            'city' => 'Voluptas ipsa repud',
+                                            'town' => 'Et elit dicta eos',
+                                            'address' => 'Sapiente quis ut et',
+                                            'gps_location' => '5.6295424,-0.19005439999999998',
+                                            'type' => "2",
+                                            'description' => "Accusamus sint offic",
+                                            'rent' => "400",
+                                            'is_rent_negotiable' => true,
+                                            'is_advance_negotiable' => false,
+                                            'contact_phone_number' => "+1 (891) 437-5757",
+                                            'contact_email' => "cinugewiz@mailinator.com",
+                                            'is_property_available' => true,
+                                        ]);
     }
 }

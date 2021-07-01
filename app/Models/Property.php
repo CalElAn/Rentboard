@@ -11,6 +11,8 @@ class Property extends Model
 
     protected $table = 'property';
 
+    protected $guarded = [];
+
     protected $primaryKey = 'property_id';
 
     public function features()

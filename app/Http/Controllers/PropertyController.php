@@ -7,6 +7,9 @@ use App\Models\PropertyType;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Foreach_;
 
+use Illuminate\Support\Facades\Auth;
+
+
 class PropertyController extends Controller
 {
     /**
@@ -26,27 +29,32 @@ class PropertyController extends Controller
      */
     public function create()
     {
-        // $properties = PropertyType::with('features')->get();
+        // dd(Auth::user());
+        // dd(Auth::check());
+        $properties = PropertyType::with('features')->get();
 
-        // foreach($properties as $item)
-        // {
-        //     $property[$item->type] = $item->features;
-        // }
+        foreach($properties as $item)
+        {
+            $property[$item->type] = $item->features;
+            $propertyTypeIDs[$item->type] = $item->property_type_id;
+        }
 
-        // $property = collect($property);
+        $property = collect($property);
+        $propertyTypeIDs = collect($propertyTypeIDs);
 
         // dd($property);
         // dd($properties);
 
-        $property = PropertyType::with('features')
-                        ->get()
-                            ->mapWithKeys(function ($item, $key) {
-                                return [$item['type'] => $item['features']];
-                            });
+        // $property = PropertyType::with('features')
+        //                 ->get()
+        //                     ->mapWithKeys(function ($item, $key) {
+        //                         return [$item['type'] => $item['features']];
+        //                     });
 
         // dd($property);
 
-        return view('add-property', ['property' => $property]);
+        return view('add-property', ['property' => $property,
+                                    'propertyTypeIDs' => $propertyTypeIDs]);
     }
 
     /**
@@ -58,6 +66,16 @@ class PropertyController extends Controller
     public function store(Request $request)
     {
         // dd($request->input());
+
+        $request->validate([
+            // 'name' => 'required|string|max:255',
+            // 'email' => 'required|string|email|max:255|unique:users',
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $property = Property::create([
+
+        ]);
     }
 
     /**
