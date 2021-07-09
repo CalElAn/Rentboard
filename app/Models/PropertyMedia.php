@@ -12,4 +12,6 @@ class PropertyMedia extends Model
     protected $table = 'property_media';
 
     protected $primaryKey = 'property_media_id';
+
+    protected $guarded = [];
 }

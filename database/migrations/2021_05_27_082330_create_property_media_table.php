@@ -16,8 +16,11 @@ class CreatePropertyMediaTable extends Migration
         Schema::create('property_media', function (Blueprint $table) {
             $table->id('property_media_id');
             $table->unsignedBigInteger('property_id');
-            $table->string('type'); //**should be a MIME or extension, generste from picture automatically, add other fields for more characteristics like size, etc
             $table->string('path');
+            $table->string('mime_type'); 
+            $table->string('extension'); 
+            $table->string('size_in_bytes'); 
+            $table->string('formatted_size'); 
             $table->timestamps();
 
             $table->foreign('property_id')

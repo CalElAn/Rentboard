@@ -19,8 +19,10 @@
             @include('layouts.navbar')
             @yield('main-content')
             <login-modal
+                :show-welcome-text="showWelcomeText"
                 @@show-sign-up-modal="showSignUpModal"
                 @@user-has-been-authenticated="onUserHasBeenAuthentiacted"
+                @@closed-login-modal = "showWelcomeText = false"
             >
             </login-modal>
             <sign-up-modal

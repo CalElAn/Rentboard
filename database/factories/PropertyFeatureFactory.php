@@ -22,12 +22,13 @@ class PropertyFeatureFactory extends Factory
      */
     public function definition()
     {
-        $propertyFeatureData = DB::table('property_feature')
-            ->pluck('name', 'property_feature_id')->toArray();
+        //*no longer using this, left behind in case of reference
+        // $propertyFeatureData = DB::table('property_feature')
+        //     ->pluck('name', 'property_feature_id')->toArray();
 
-        return [
-            'name' => $propertyFeatureData[ array_rand($propertyFeatureData) ],
-            'input_type' => 'checkbox'
-        ];
+        // return [
+        //     'name' => $propertyFeatureData[ array_rand($propertyFeatureData) ],
+        //     'input_type' => 'checkbox'
+        // ];
     }
 }

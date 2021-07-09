@@ -14,33 +14,9 @@ use App\Models\PropertyMedia;
 use App\Models\PropertyReview;
 use App\Models\Article;
 
+use Illuminate\Support\Facades\DB;
+
 class UserTest extends TestCase
 {
-    public function createAUserWithEverything()
-    {
-        //create a user with properties with features
-
-        $articleFactory = Article::factory()->count(2);
-
-        $favouritePropertyFactory = FavouriteProperty::factory()->count(2);
-
-        $propertyReviewFactory = PropertyReview::factory()->count(2);
-
-        $propertyMediaFactory = PropertyMedia::factory()->count(5);
-
-        $propertyFeatureFactory = PropertyFeature::factory()->count(8);
-
-        $propertyFactory = Property::factory()->count(1)->has($propertyFeatureFactory, 'features')
-                                                        ->has($propertyMediaFactory, 'media')
-                                                        ->has($propertyReviewFactory, 'reviews');
-        
-        $userFactory = User::factory()->count(1)->has($favouritePropertyFactory, 'favouriteProperties')
-                                                ->has($articleFactory, 'articles')
-                                                ->has($propertyFactory, 'properties')
-                                                ->create();
-        
-        // dd($userFactory);
-        //using make instead of create will not persist it
-    }
 
 }

@@ -64,7 +64,8 @@ return [
     | the locations of the links and the values should be their targets.
     |
     */
-
+    //* returned after running "sail artisan storage:link" : 
+    //*The [/var/www/html/public/storage] link has been connected to [/var/www/html/storage/app/public].
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],

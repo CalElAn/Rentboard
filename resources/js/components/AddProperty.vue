@@ -59,18 +59,18 @@
                 <div class="col-span-1 col-start-1">
                     <label for="contact-number" class="block font-medium text-gray-700 text-sm">Contact number <span
                             class="text-red-600">*</span></label>
-                    <input v-model="form.contactNumber" type="tel" id="contact-number"
+                    <input v-model="form.contactPhoneNumber" type="tel" id="contact-number"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                     <span class="text-red-600 text-sm"
-                        v-if="v$.form.contactNumber.$error">{{ v$.form.contactNumber.$errors[0].$message }}
+                        v-if="v$.form.contactPhoneNumber.$error">{{ v$.form.contactPhoneNumber.$errors[0].$message }}
                     </span>
                 </div>
                 <div class="col-span-1">
-                    <label for="email" class="block font-medium text-gray-700 text-sm">Email <span
+                    <label for="email" class="block font-medium text-gray-700 text-sm">Contact Email <span
                             class="text-red-600">*</span></label>
-                    <input v-model="form.email" type="email" id="email"
+                    <input v-model="form.contactEmail" type="email" id="email"
                         class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                    <span class="text-red-600 text-sm" v-if="v$.form.email.$error">{{ v$.form.email.$errors[0].$message }}
+                    <span class="text-red-600 text-sm" v-if="v$.form.contactEmail.$error">{{ v$.form.contactEmail.$errors[0].$message }}
                     </span>
                 </div>
                 <div class="col-span-2 flex justify-end">
@@ -105,9 +105,9 @@
                 <div v-if="property[form.type]?.[0]" class="col-span-1"></div>
                 <template v-for="(item, index) in property[form.type]" :key="index">
                     <div v-if="item['input_type'] == 'number'" class="col-span-1">
-                        <label for="address" class="block font-medium text-gray-700 text-sm">{{ item['name'] }}</label>
+                        <label for="address" class="block font-medium text-gray-700 text-sm">{{ item['feature'] }}</label>
                         <input type="number"
-                            v-model="form.inputFeatures[item['name']]"
+                            v-model="form.inputFeatures[item['feature']]"
                             class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                     </div>
                 </template>
@@ -115,18 +115,18 @@
                     <div v-if="item['input_type'] == 'checkbox'" class="col-span-1 flex items-center">
                         <input type="checkbox"
                             v-model="form.checkedFeatures"
-                            :value="item['name']"
+                            :value="item['feature']"
                             class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" />
-                        <span class="ml-2">{{ item['name'] }}</span>
+                        <span class="ml-2">{{ item['feature'] }}</span>
                     </div>
                 </template>
                 <template v-for="(item, index) in property[form.type]" :key="index">
                     <div v-if="item['input_type'] == 'radio'" class="col-span-1 flex items-center">
                         <input  type="radio"
                             v-model="form.pickedFeatures"
-                            :value="item['name']"
+                            :value="item['feature']"
                             class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> 
-                       <span class="ml-2">{{ item['name'] }}</span>
+                       <span class="ml-2">{{ item['feature'] }}</span>
                     </div>
                 </template>
                 <div class="col-span-2 col-start-1">
@@ -135,6 +135,7 @@
                     </label>
                     <div class="mt-1">
                     <textarea id="description" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" 
+                        @input="autoGrowTextarea"
                         v-model="form.description"
                         placeholder="Add any other features we might have missed"></textarea>
                     </div>
@@ -142,12 +143,12 @@
                 <div class="col-span-1 col-start-1">
                     <div>
                         <label for="price"
-                            class="block font-medium text-gray-700 text-sm">{{ 'Price (GH&#8373; / month)' }}
+                            class="block font-medium text-gray-700 text-sm">{{ 'Rent (GH&#8373; / month)' }}
                             <span class="text-red-600">*</span></label>
                         <input type="number" step="any" id="address"
-                            v-model="form.price"
+                            v-model="form.rent"
                             class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                        <span class="text-red-600 text-sm" v-if="v$.form.price.$error">{{ v$.form.price.$errors[0].$message }}
+                        <span class="text-red-600 text-sm" v-if="v$.form.rent.$error">{{ v$.form.rent.$errors[0].$message }}
                         </span>
                     </div>
                     <div class="col-span-1 col-start-1 inline-flex items-center mt-2">
@@ -175,7 +176,7 @@
                 <div class="text-xl mb-3">Upload Media</div>
                 <div>
                     <label class="block font-medium text-gray-700">
-                        Upload photos
+                        Upload photos or videos
                     </label>
                     <file-pond
                         name="filepond"
@@ -183,27 +184,30 @@
                         label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
                         allow-multiple="true"
                         allow-reorder="true"
-                        accepted-file-types="image/jpeg, image/png"
+                        :accepted-file-types="['image/*', 'video/*']"
                         :server = "{
                             url: '/filepond',
                             process: '/process',
                             revert: '/revert',
-                            restore: '/restore/',
-                            load: '/load/',
-                            fetch: '/fetch/',
+                            restore: '/restore',
+                            load: '/load',
+                            fetch: '/fetch',
                             headers: {
                                 'X-CSRF-TOKEN': csrfToken
                             }
                         }"
-                        @processFiles="onFilePondProcessFiles"
+                        @processfile="onFilePondProcessFile"
                     />
+                    <ul class=" list-disc list-inside text-red-600 text-sm" v-if="mediaError">
+                        <li>{{ mediaError }}</li>
+                    </ul>
                 </div>
                 <div class="input-errors ml-3 my-3 text-red-600 text-sm">
                     <ul class="mt-3 list-disc list-inside">
                         <li v-for="error of v$.form.$errors" :key="error.$uid">{{ error.$message +' on "'+ error.$property +'"'  }}</li>
                     </ul>
                 </div>
-                <div class="col-span-2 flex justify-between">
+                <div class="mt-7 col-span-2 flex justify-between">
                     <button @click="previousStep"
                         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Previous
@@ -265,22 +269,24 @@ export default {
             csrfToken: csrfToken,
 
             gpsLocationError: '',
+            mediaError: '',
+
+            triggerSubmitAfterLogin: false,
 
             form: {
                 city: '',
                 town: '',
                 address: '',
                 gpsLocation: '',
-                contactNumber: '',
-                email: '',
+                contactPhoneNumber: '',
+                contactEmail: '',
                 type: '',
-                typeID: '',
                 checkedFeatures: [],
                 pickedFeatures: '',
                 inputFeatures: {},
                 description: '',
-                price: '',
-                negotiable: '', //lalter check when submitted if I need to change true/false value to 0 or 1
+                rent: '',
+                negotiable: false, //lalter check when submitted if I need to change true/false value to 0 or 1
                 media: [],
             }
         };
@@ -305,11 +311,11 @@ export default {
                     required,
                     $autoDirty: true
                 },
-                contactNumber: {
+                contactPhoneNumber: {
                     required,
                     $autoDirty: true
                 },
-                email: {
+                contactEmail: {
                     required,
                     email,
                     $autoDirty: true
@@ -318,7 +324,7 @@ export default {
                     required,
                     $autoDirty: true
                 },
-                price: {
+                rent: {
                     required,
                     $autoDirty: true,
                     numeric
@@ -327,7 +333,16 @@ export default {
         };
     },
 
-    props: ['property', 'propertyTypeIDs', 'isUserAuthenticated', 'authenticatedUser'],
+    props: ['property', 'isUserAuthenticated', 'authenticatedUser'],
+
+    watch: {
+        isUserAuthenticated(newValue, oldValue) {
+            if (newValue == true && this.triggerSubmitAfterLogin == true) {
+                console.log('triggerSubmit')
+                this.submitForm()
+            }
+        }
+    },
 
     emits: ['showLoginModal'],
 
@@ -363,26 +378,45 @@ export default {
         },
 
         typeOnChange() {
-            this.form.typeID = this.propertyTypeIDs[this.form.type]
-
             this.form.checkedFeatures.length = 0;
             this.form.pickedFeatures = '';
             this.form.inputFeatures = {};
+        }, 
+
+        autoGrowTextarea(element) {
+            element.target.style.height = "";
+            element.target.style.height = (element.target.scrollHeight) + "px";
         },
 
         submitForm() {
             this.v$.$touch()
-            // if (this.v$.$error) return
 
             this.form.media.length = 0;
             this.$refs.filepond.getFiles().forEach((value, key) => this.form.media.push(value.serverId))
+            
+            // if(this.form.media.length == 0)
+            // {
+            //     this.mediaError = 'At least one image or video is required';
+            //     return
+            // }
+
+            // if (this.v$.$error) return
 
             if (!this.isUserAuthenticated) {
-                this.$emit('showLoginModal')
+                this.triggerSubmitAfterLogin = true
+                this.$emit('showLoginModal', {showWelcomeText: true})
                 return
             }
 
-            // axios.post('/add-property', this.form)     
+            axios.post('/add-property', this.form)
+                .then( (response) => {
+                    if( response.status == 200 ) {  
+                        window.location.replace('/'); //*should redirect to show property page
+                    }
+                })
+                .catch( (error) => {
+                    console.log(error)
+                })  
         },
 
         keepTokenAlive() {
@@ -396,8 +430,8 @@ export default {
                 })
         },
 
-        onFilePondProcessFiles() {
-            //wait for media to finish uploading error, set back to false on addMedia event
+        onFilePondProcessFile() {
+            this.mediaError = '';
         }
     },
 

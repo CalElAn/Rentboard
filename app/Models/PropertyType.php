@@ -11,10 +11,14 @@ class PropertyType extends Model
 
     protected $table = 'property_type';
 
-    protected $primaryKey = 'property_type_id';
+    protected $primaryKey = 'type';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     public function features()
     {
-        return $this->belongsToMany(PropertyFeature::class, 'PropertyType_PropertyFeature_join', 'property_type_id', 'property_feature_id', 'property_type_id', 'property_feature_id');
+        return $this->belongsToMany(PropertyFeature::class, 'PropertyType_PropertyFeature_join', 'type', 'feature', 'type', 'feature')->withTimestamps();
     }
 }

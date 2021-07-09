@@ -30,15 +30,18 @@
     <p class="text-xl">for something particular in your next rental?</p>
     <p class="text-xl">Rent easy with us.</p>
 </div>
-<div class="h-screen bg-main-gray">
+<div class="bg-main-gray">
     <div class="pt-10 pb-16 flex justify-center text-4xl font-bold">
         Explore Rentals in Accra
     </div>
-    <div id="app" class="flex justify-center">
+    <div class="flex flex-col items-center gap-10">
+        @isset($properties)
+        @foreach($properties as $property)
         <div class="flex h-96 w-3/5 rounded-2xl bg-card-gray">
-            <property-media-carousel class="h-full rounded-2xl w-1/2"></property-media-carousel>
+            <property-media-carousel class="h-full rounded-2xl w-1/2"
+                :media="{{$property->media}}"
+            ></property-media-carousel>
             <div class="flex flex-col gap-2 h-full justify-center rounded-r-2xl w-1/2 px-5">
-                @isset($property)
                 <div class="flex justify-between">
                     {{$property->propertyType->type}} in {{$property->town}}
 
@@ -58,8 +61,20 @@
                 <hr class="w-1/6 border-2 bg-gray-400">
                 <div>
                     <ul class="list-disc list-inside">
-                        @foreach ($property->features as $key)
-                            <li>{{$key->name}}</li>
+                        @foreach ($property->features as $feature)
+                            @if ($feature->input_type == 'number')
+                                {{$feature->feature.': '.$feature->pivot->number}}
+                            @endif
+                        @endforeach
+                        @foreach ($property->features as $feature)
+                            @if ($feature->input_type == 'checkbox')
+                                <li>{{$feature->feature}}</li>
+                            @endif
+                        @endforeach
+                        @foreach ($property->features as $feature)
+                            @if ($feature->input_type == 'radio')
+                                {{'- '.$feature->feature}}
+                            @endif
                         @endforeach
                         {{-- <li>2 Bedrooms</li>
                         <li>1 Washroom</li>
@@ -83,9 +98,10 @@
                         GH&#8373 {{$property->rent}} / month
                     </div>
                 </div>
-                @endisset
             </div>
         </div>
+        @endforeach
+        @endisset
     </div>
     <div class="flex justify-center py-auto">
         <a class="px-8 py-3 my-10 bg-main-green text-white rounded-full" href="#">

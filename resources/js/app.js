@@ -1,6 +1,6 @@
 require('./bootstrap');
 
-require('alpinejs');
+// require('alpinejs');
 
 import { createApp } from 'vue';
 
@@ -29,12 +29,15 @@ const app = createApp({
                     return {
                         isUserAuthenticated: isUserAuthenticatedVar,
                         authenticatedUser: authenticatedUserVar,
+
+                        showWelcomeText: false,
                     }
                 },
 
                 methods: {
 
-                    showLoginModal() {
+                    showLoginModal(event) {
+                        event.showWelcomeText ? this.showWelcomeText = true : ''
                         this.$vfm.show('LoginModal')
                     },
 

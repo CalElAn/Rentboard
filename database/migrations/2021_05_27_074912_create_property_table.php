@@ -21,7 +21,7 @@ class CreatePropertyTable extends Migration
             $table->string('town');
             $table->text('address');
             $table->string('gps_location')->unique()->nullable();
-            $table->unsignedBigInteger('type')->nullable();
+            $table->string('type')->nullable(); //nullable because of the foreign key relationship (on delete set null)
             $table->text('description')->nullable();
             $table->integer('rent');
             $table->boolean('is_rent_negotiable')->default(0);
@@ -39,7 +39,7 @@ class CreatePropertyTable extends Migration
                     ->onDelete('cascade');
 
             $table->foreign('type')
-                    ->references('property_type_id')
+                    ->references('type')
                     ->on('property_type')
                     ->onUpdate('cascade')
                     ->onDelete('set null');  

@@ -14,8 +14,7 @@ class CreatePropertyFeatureTable extends Migration
     public function up()
     {
         Schema::create('property_feature', function (Blueprint $table) {
-            $table->id('property_feature_id');
-            $table->string('name');
+            $table->string('feature')->primary();
             $table->string('input_type');
             $table->timestamps();
         });

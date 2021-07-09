@@ -2,6 +2,7 @@
 <vue-final-modal
     v-model="showLoginModal"
     name = 'LoginModal'
+    @closed = "this.$emit('closedLoginModal')"
     :transition="{
         'enter-active-class': 'transition duration-200 ease-in-out transform',
         'enter-from-class': 'translate-y-full',
@@ -13,6 +14,19 @@
     classes="text-main flex justify-center items-center"
     content-class="w-full sm:max-w-md px-6 pb-6 pt-8 bg-white overflow-hidden sm:rounded-lg rounded-2xl relative flex flex-col max-h-full border"
 >
+    <div v-if="showWelcomeText" class="mb-4 text-center">
+        <div class="font-bold">Welcome!</div>
+        Kindly login to complete the submission process, or             
+        <a 
+            @click="showSignUpModal"
+            class="underline text-sm text-indigo-600 hover:text-indigo-700" 
+            href="#"
+        >
+            Sign Up
+        </a>
+        if you do not have an account
+       
+    </div>
     <!-- Validation Errors -->
     <div class="mb-4" v-if="errors.email">
         <div class="font-medium text-red-600">
@@ -89,13 +103,14 @@ export default {
     data: () => ({
         showLoginModal: false,
         errors: {},
-       form: {
-            email: '',
-            password: '',
-            remember: '',
-        }
+        form: {
+                email: '',
+                password: '',
+                remember: '',
+            }
     }),
 
+    props: ['showWelcomeText'],
 
     methods: {
         showSignUpModal() {

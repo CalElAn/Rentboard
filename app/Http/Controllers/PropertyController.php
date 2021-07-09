@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use App\Models\PropertyType;
+use App\Models\PropertyMedia;
+
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Foreach_;
-
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use DB;
+
+use App\Classes\CustomMethods;
 
 
 class PropertyController extends Controller
@@ -19,7 +24,7 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        return view('home', ['property' => Property::latest()->first()]);
+        return view('home', ['properties' => Property::latest()->get()]);
     }
 
     /**
@@ -29,32 +34,16 @@ class PropertyController extends Controller
      */
     public function create()
     {
-        // dd(Auth::user());
-        // dd(Auth::check());
         $properties = PropertyType::with('features')->get();
 
         foreach($properties as $item)
         {
             $property[$item->type] = $item->features;
-            $propertyTypeIDs[$item->type] = $item->property_type_id;
         }
 
         $property = collect($property);
-        $propertyTypeIDs = collect($propertyTypeIDs);
 
-        // dd($property);
-        // dd($properties);
-
-        // $property = PropertyType::with('features')
-        //                 ->get()
-        //                     ->mapWithKeys(function ($item, $key) {
-        //                         return [$item['type'] => $item['features']];
-        //                     });
-
-        // dd($property);
-
-        return view('add-property', ['property' => $property,
-                                    'propertyTypeIDs' => $propertyTypeIDs]);
+        return view('add-property', ['property' => $property]);
     }
 
     /**
@@ -66,16 +55,77 @@ class PropertyController extends Controller
     public function store(Request $request)
     {
         // dd($request->input());
-
         $request->validate([
-            // 'name' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:users',
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'city' => 'required',
+            'town' => 'required',
+            'address' => 'required',
+            'contactPhoneNumber' => 'required',
+            'contactEmail' => 'required|email',
+            'type' => 'required',
+            'rent' => 'required|numeric',
         ]);
 
         $property = Property::create([
-
+            'user_id' => Auth::user()->id,
+            'city' => $request->city,
+            'town' => $request->town,
+            'address' => $request->address,
+            'gps_location' => $request->gpsLocation,
+            'contact_phone_number' => $request->contactPhoneNumber,
+            'contact_email' => $request->contactEmail,
+            'type' => $request->type,
+            'rent' => $request->rent,
+            'description' => $request->description,
+            'is_rent_negotiable' => $request->negotiable, //test what happens in database when negotiable os not ticked
         ]);
+
+        $attachArray = [];
+
+        if($request->checkedFeatures) 
+        {
+            foreach ($request->only('checkedFeatures')['checkedFeatures'] as $key => $value )
+            {
+                $attachArray[$value] = ['number' => null] ;
+            }   
+        }
+
+        if($request->pickedFeatures) 
+        {
+            foreach ($request->only('pickedFeatures') as $key => $value )
+            {
+                $attachArray[$value] = ['number' => null] ;
+            }
+        }
+
+        if($request->inputFeatures) 
+        {
+            foreach ($request->only('inputFeatures')['inputFeatures'] as $key => $value )
+            {
+                $attachArray[$key] = ['number' => $value ?? 1] ;
+            }
+        }
+        
+        $property->features()->attach($attachArray); //*refresh propery before returning (if it will be returned)
+
+        foreach ($request->only('media')['media'] as $key => $value )
+        {
+            $newStoragePath = Auth::user()->id.'/'.$property->property_id.'/'.$value;
+
+            Storage::disk('public')->move('filepond/tmp/'.$value, $newStoragePath);
+
+            $propertyMediaInsertArray[] = [
+                                            'property_id' => $property->property_id, 
+                                            'path' => $newStoragePath,
+                                            'mime_type' => Storage::disk('public')->mimeType($newStoragePath),
+                                            'extension' => pathinfo(storage_path('app/public').'/'.$newStoragePath, PATHINFO_EXTENSION),
+                                            'size_in_bytes' => Storage::disk('public')->size($newStoragePath),
+                                            'formatted_size' => CustomMethods::formatSizeUnits(Storage::disk('public')->size($newStoragePath)),
+                                            'created_at' => date('Y-m-d H:i:s'),
+                                            'updated_at' => date('Y-m-d H:i:s')
+                                          ]; 
+        }
+
+        PropertyMedia::insert($propertyMediaInsertArray);
     }
 
     /**

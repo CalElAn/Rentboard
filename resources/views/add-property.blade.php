@@ -6,7 +6,6 @@
 <div class="pt-20">
     <add-property
     :property = "{{$property}}"
-    :property-type-i-ds = "{{$propertyTypeIDs}}"
     :is-user-authenticated = "isUserAuthenticated"
     :authenticated-user = "authenticatedUser"
     @@show-login-modal = "showLoginModal"

@@ -11,9 +11,16 @@
         @swiper="onSwiper"
         @slideChange="onSlideChange"
     >
-        <swiper-slide> <img src="https://picsum.photos/405/384" alt="property-img"> </swiper-slide>
+        <swiper-slide v-for="(item, index) in media" :key="index">
+             <img v-if="item.mime_type.search('image') == 0" :src="'storage/'+item.path" alt="property-img"> 
+            <!-- <video width="320" height="240" controls>
+                <source :src="'storage/'+item.path" type="video/mp4">
+                Your browser does not support the video tag.
+            </video> -->
+        </swiper-slide>
+        <!-- <swiper-slide> <img src="https://picsum.photos/405/384" alt="property-img"> </swiper-slide>
         <swiper-slide><img src="https://picsum.photos/405/384" alt="property-img"></swiper-slide>
-        <swiper-slide><img src="https://picsum.photos/405/384" alt="property-img"></swiper-slide>
+        <swiper-slide><img src="https://picsum.photos/405/384" alt="property-img"></swiper-slide> -->
     </swiper>
 
 </template>
@@ -42,6 +49,8 @@ export default {
         Swiper,
         SwiperSlide,
     },
+
+    props: ['media'],
 
     methods: {
         onSwiper(swiper) {

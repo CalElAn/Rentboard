@@ -29,7 +29,7 @@ class PropertyFactory extends Factory
             'town' => $this->faker->streetName(),
             'address' => $this->faker->address(),
             'gps_location' => $this->faker->latitude().','.$this->faker->longitude(),
-            'type' => $this->faker->numberBetween(1, 5),
+            'type' => 'Apartment', //hardcode Apartment for now
             'description' => $this->faker->paragraph(),
             'rent' => $this->faker->randomNumber(4, false),
             'is_rent_negotiable' => $this->faker->numberBetween(0, 1),

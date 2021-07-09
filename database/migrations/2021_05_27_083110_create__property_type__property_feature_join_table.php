@@ -15,20 +15,20 @@ class CreatePropertyTypePropertyFeatureJoinTable extends Migration
     {
         Schema::create('PropertyType_PropertyFeature_join', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('property_type_id');
-            $table->unsignedBigInteger('property_feature_id');
+            $table->string('type');
+            $table->string('feature');
             $table->timestamps();
 
-            $table->unique(['property_type_id', 'property_feature_id'], 'PropertyTypeID_PropertyFeatureID_unique');
+            $table->unique(['type', 'feature'], 'PropertyType_PropertyFeature_unique');
 
-            $table->foreign('property_type_id')
-                    ->references('property_type_id')
+            $table->foreign('type')
+                    ->references('type')
                     ->on('property_type')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');  
 
-            $table->foreign('property_feature_id')
-                    ->references('property_feature_id')
+            $table->foreign('feature')
+                    ->references('feature')
                     ->on('property_feature')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');            

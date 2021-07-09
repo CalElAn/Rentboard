@@ -17,7 +17,7 @@ class Property extends Model
 
     public function features()
     {
-        return $this->belongsToMany(PropertyFeature::class, 'Property_PropertyFeature_join', 'property_id', 'property_feature_id', 'property_id', 'property_feature_id');
+        return $this->belongsToMany(PropertyFeature::class, 'Property_PropertyFeature_join', 'property_id', 'feature', 'property_id', 'feature')->withPivot('number')->withTimestamps();
     }
 
     public function media()
@@ -32,6 +32,6 @@ class Property extends Model
 
     public function propertyType() //changed name from 'type' cos it conflicted with a property on the model
     {
-        return $this->belongsTo(PropertyType::class, 'type', 'property_type_id');
+        return $this->belongsTo(PropertyType::class, 'type', 'type');
     }
 }
