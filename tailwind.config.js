@@ -12,14 +12,18 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-                'main': ['"Proxima Nova"']
+                // sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+                'main': ['Ubuntu', ...defaultTheme.fontFamily.sans]
             }, 
             colors: {
                 'main-colour': '#E59A42',
+                'main-colour-darker': '#ce8b3b',
                 'main-gray': '#FAFAFA',
                 'card-gray': '#F0F0F0',
                 'main-green': '#29754B'
+            },
+            boxShadow: {
+                '3xl': '0 2px 7px 0px rgba(0, 0, 0, 0.3)',
             }
         },
     },

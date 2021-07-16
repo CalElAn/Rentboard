@@ -24,7 +24,10 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        return view('home', ['properties' => Property::latest()->get()]);
+        //!TODO write tests to check whether property typr is returned on every page (returned from AppServiceProvider)
+        return view('home', [
+                            'properties' => Property::latest()->get(),
+                            ]);
     }
 
     /**

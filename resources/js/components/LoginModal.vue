@@ -14,6 +14,9 @@
     classes="text-main flex justify-center items-center"
     content-class="w-full sm:max-w-md px-6 pb-6 pt-8 bg-white overflow-hidden sm:rounded-lg rounded-2xl relative flex flex-col max-h-full border"
 >
+    <button class="absolute top-0 right-0 mt-2 mr-2" @click="showLoginModal=false">
+      <XIcon  class="h-5 w-5 text-black"/>
+    </button>
     <div v-if="showWelcomeText" class="mb-4 text-center">
         <div class="font-bold">Welcome!</div>
         Kindly login to complete the submission process, or             
@@ -98,6 +101,9 @@
 </template>
 
 <script>
+
+import { XIcon } from '@heroicons/vue/solid'
+
 export default {
 
     data: () => ({
@@ -109,6 +115,10 @@ export default {
                 remember: '',
             }
     }),
+
+    components: {
+        XIcon
+    },
 
     props: ['showWelcomeText'],
 

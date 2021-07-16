@@ -4,7 +4,7 @@
 
 @layer base {
     @font-face {
-        font-family: Proxima Nova;
-        src: url(/fonts/proxima-nova-font.otf) format("otf");
+        font-family: Ubuntu;
+        src: url(/fonts/Ubuntu/Ubuntu-Regular.ttf) format("ttf");
     }
 }

@@ -3,21 +3,18 @@
 @section('main-content')
 <div class="w-full h-screen bg-no-repeat bg-cover bg-center pt-32" style="background-image: url('/images/home-background.png');">
     <div class="flex flex-col gap-9 h-1/2 justify-center">
-        <div class="flex justify-center text-4xl font-bold text-white">
+        <div 
+            ref="mainHeader"
+            class="flex justify-center text-4xl font-bold text-white">
             Discover Your New Home
         </div>
         <div class="flex justify-center">
-            <div class="bg-white flex items-center rounded-full shadow-xl w-5/12">
-                <input class="border-0 rounded-l-full w-full pl-12 py-4 px-6 text-gray-700 leading-tight focus:outline-none" id="search" type="text" placeholder="Where do you want to live?">
-
-                <div class="p-4">
-                    <button class="rounded-full p-2 focus:outline-none w-12 h-12 flex items-center justify-center">
-                        <svg class="text-main-colour" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            <search-bar
+                :property-types="{{$propertyTypes}}"
+                :is-search-bar-in-navbar="false"
+                @@on-scroll-y-past-search-bar="isScrollYPastSearchBar=true"
+                @@on-scroll-y-not-past-search-bar="isScrollYPastSearchBar=false"
+            ></search-bar>
         </div>
         <div class="flex justify-center text-opacity-50 text-white text-sm">
             Houses and apartments for rent

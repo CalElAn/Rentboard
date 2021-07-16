@@ -13,6 +13,10 @@
     classes="text-main flex justify-center items-center"
     content-class="overflow-y-auto w-full sm:max-w-md px-6 pb-6 pt-8 bg-white overflow-hidden sm:rounded-lg rounded-2xl relative flex flex-col max-h-full border"
 >
+    <button class="absolute top-0 right-0 mt-2 mr-2" @click="showSignUpModal=false">
+      <XIcon  class="h-5 w-5 text-black"/>
+    </button>
+
     <!-- Validation Errors -->
     <!-- <div v-if="errors">
         <div class="font-medium text-red-600">
@@ -108,6 +112,9 @@
 </template>
 
 <script>
+
+import { XIcon } from '@heroicons/vue/solid'
+
 export default {
 
     data() {
@@ -122,6 +129,10 @@ export default {
                 password_confirmation: '',
             }     
         }
+    },
+
+    components: {
+        XIcon
     },
 
     methods: {

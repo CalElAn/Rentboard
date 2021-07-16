@@ -9,6 +9,18 @@
     <title>@yield('title', env('APP_NAME'))</title>
 </head>
 
+<style>
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 0.7s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+        opacity: 0;
+    }
+</style>
+
 <noscript>
     <strong>We're sorry but this page doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
 </noscript>  
@@ -16,7 +28,17 @@
 <body class="bg-gray-200 font-main">
     <main>
         <div id="app">
-            @include('layouts.navbar')
+            <navbar 
+                :authenticated-user="authenticatedUser"
+                :is-user-authenticated="isUserAuthenticated"
+                :is-scroll-y-past-search-bar="isScrollYPastSearchBar"
+                :is-scroll-y-past-main-header="isScrollYPastMainHeader"
+                :app-name="'{{env('APP_NAME')}}'"
+                :property-types="{{$propertyTypes}}"
+                @@show-login-modal = "showLoginModal"
+                @@show-sign-up-modal="showSignUpModal"
+            ></navbar>
+
             @yield('main-content')
             <login-modal
                 :show-welcome-text="showWelcomeText"
